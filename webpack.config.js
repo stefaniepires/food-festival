@@ -1,9 +1,11 @@
-const path = require("path");
 const webpack = require("webpack");
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const SWPrecacheWebpackPlugin = require("sw-precache-webpack-plugin");
 const WebpackPwaManifest = require("webpack-pwa-manifest");
+const path = require("path");
 
-module.exports = {
+
+const config = {
   entry: {
     app: './assets/js/script.js',
     events: './assets/js/events.js',
@@ -18,32 +20,31 @@ module.exports = {
     rules: [
       {
         test: /\.(png|jpe?g|gif)$/i,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name(file) {
-                return '[path][name].[ext]';
-              },
-              publicPath: function(url) {
-                return url.replace('../', '/assets/');
-              }
-            }
-          },
-          {
-            loader: 'image-webpack-loader'
-          }
-        ]
-      }
-    ]
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name (file) {
+              return '[path][name].[ext]'
+            },
+            publicPath: function(url) {
+                return url.replace('../', '/assets/')
+            },
+          }  
+        }, 
+        {
+          loader: 'image-webpack-loader',
+        },
+      ],
+      },
+    ],
   },
-  plugins:[
+  plugins: [
     new webpack.ProvidePlugin({
-      $: "jquery",
-      jQuery: "jquery"
+        $: "jquery",
+        jQuery: "jquery"
     }),
     new BundleAnalyzerPlugin({
-      analyzerMode: "static", // the report outputs to an HTML file in the dist folder
+      analyzerMode: "static"
     }),
     new WebpackPwaManifest({
       name: "Food Event",
@@ -60,6 +61,8 @@ module.exports = {
         destination: path.join("assets", "icons")
       }]
     })
-  ],
-  mode: 'development'
+],
+  mode: "development"
 };
+
+module.exports = config;
